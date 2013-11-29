@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package gym.course_725g61.ida.liu;
+
+import java.util.Scanner;
+
+/**
+ * @author Anton Amlinger
+ *
+ */
+public class Reader {
+
+}

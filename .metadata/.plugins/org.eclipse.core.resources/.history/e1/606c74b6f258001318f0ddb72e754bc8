@@ -1,0 +1,25 @@
+/**
+ * 
+ */
+package gym.course_725g61.ida.liu;
+
+import java.util.Scanner;
+
+/**
+ * Serves as a more useful adapter towards
+ * the more frequently used Scanner class,
+ * for reading personal 
+ * 
+ * @author Anton Amlinger
+ *
+ */
+public class Reader {
+	
+	private boolean percistant = true;
+	private Scanner scanner;
+	
+	public Reader(InputStream is) {
+		this.scanner = new Scanner(is);
+	}
+	
+}

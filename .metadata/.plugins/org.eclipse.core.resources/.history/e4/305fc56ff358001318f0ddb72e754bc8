@@ -1,0 +1,49 @@
+/**
+ * 
+ */
+package gym.course_725g61.ida.liu;
+
+import java.io.InputStream;
+import java.util.Scanner;
+
+/**
+ * Serves as a more useful adapter towards
+ * the more frequently used Scanner class,
+ * for reading personal id:s and other more
+ * specific information then programmatic.
+ * 
+ * Should be seen as a subclass for the 
+ * java.util.Scanner class, but since this 
+ * is declared final an adapter will serve
+ * this purpose.
+ * 
+ * @author Anton Amlinger
+ *
+ */
+public class Reader {
+	
+	private boolean persistant = true;
+	private Scanner scanner;
+	
+	public Reader(InputStream is) {
+		this.scanner = new Scanner(is);
+	}
+	
+	public String next() {
+		return this.scanner.next();
+	}
+	
+	public String nextLine() {
+		return this.scanner.nextLine();
+	}
+	
+	public String nextPersonalId() {
+		do {
+			String pID = nextLine();
+			
+		} while(persistant && );
+		
+		
+	}
+	
+}

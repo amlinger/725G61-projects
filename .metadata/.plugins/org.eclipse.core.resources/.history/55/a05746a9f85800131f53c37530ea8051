@@ -1,0 +1,88 @@
+/**
+ * 
+ */
+package gym.course_725g61.ida.liu;
+
+import java.io.InputStream;
+import java.util.Scanner;
+
+/**
+ * Serves as a more useful adapter towards
+ * the more frequently used Scanner class,
+ * for reading personal id:s and other more
+ * specific information then programmatic.
+ * 
+ * Should be seen as a subclass for the 
+ * java.util.Scanner class, but since this 
+ * is declared final an adapter will serve
+ * this purpose.
+ * 
+ * @author Anton Amlinger
+ *
+ */
+public class Reader {
+	
+	private boolean persistant = true;
+	private Scanner scanner;
+	private String consolePrefix = ">> ";
+	
+	public Reader(InputStream is) {
+		this.scanner = new Scanner(is);
+	}
+	
+	public String next() {
+		System.out.print(consolePrefix);
+		return this.scanner.next();
+	}
+	
+	public String nextLine() {
+		System.out.print(consolePrefix);
+		return this.scanner.nextLine();
+	}
+	
+	/**
+	 * Calls 
+	 * 
+	 * @return
+	 */
+	public String nextPersonalId() {
+		return this.nextPersonalId("");
+	}
+	
+	/**
+	 * A specialized personal ID reader, that reads
+	 * an input until the end of a line, and checks if 
+	 * it is a valid swedish personal ID. So far, it
+	 * only provides a somewhat dumb check for this which
+	 * checks the validation numbers as well. 
+	 * 
+	 * An errorMessage may be provided, which is printed
+	 * if unsuccessful.
+	 * 
+	 * If Reader is set to persistant, it will try to read
+	 * a personal number until a correctly formatted number
+	 * is given.
+	 * 
+	 * @param errorMessage
+	 * @return
+	 */
+	public String nextPersonalId(String errorMessage) {
+		String pID 		= "";
+		boolean error	= false;
+		
+		// A non-correct-way of checking a personal id.
+		String regex 	= "(19)[0-9]{2}?((0[1-9])|(1[0-2]))[0-3][0-9]\\-?[0-9]{4}"; 
+		
+		do {
+			pID = nextLine();
+			error = !pID.matches(regex);
+			
+			if(error)
+					System.out.println(errorMessage);
+			
+		} while(persistant && error);
+		
+		return pID;
+	}
+	
+}
