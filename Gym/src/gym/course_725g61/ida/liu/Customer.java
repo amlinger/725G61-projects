@@ -1,0 +1,9 @@
+package gym.course_725g61.ida.liu;
+
+public class Customer extends Person {
+
+	public Customer(String personID, String firstName, String lastName) {
+		super(personID, firstName, lastName);
+	}
+
+}

@@ -1,6 +1,7 @@
 package gym.course_725g61.ida.liu;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -34,10 +35,15 @@ public class Reader {
 	 * 
 	 * @return
 	 */
-	public String next() {
-		System.out.print(consolePrefix);
+	public String next(String prefix) {
+		System.out.print(prefix);
 		return this.scanner.next();
 	}
+	
+	public String next() {
+		return next(this.consolePrefix);
+	}
+	
 	
 	/**
 	 * Adapter for java.util.Scanners native nextLine()
@@ -46,10 +52,15 @@ public class Reader {
 	 * 
 	 * @return
 	 */
-	public String nextLine() {
-		System.out.print(consolePrefix);
+	public String nextLine(String prefix) {
+		System.out.print(prefix);
 		return this.scanner.nextLine();
 	}
+	
+	public String nextLine() {
+		return nextLine(this.consolePrefix);
+	}
+	
 	
 	/**
 	 * Calls nextPersonalId(String), see specification
@@ -95,6 +106,66 @@ public class Reader {
 		} while(persistant && error);
 		
 		return pID;
+	}
+
+	/**
+	 * Given an iterable, it simulates autocompletion by
+	 * iterating over the possible alternatives in the 
+	 * given iterable list, and returning an element 
+	 * when there is only one candidate left.
+	 * 
+	 * If fed an empty string, eg simply pressing enter,
+	 * the top alternative is chosen and returned.
+	 * 
+	 * @param iterable
+	 * @return
+	 */
+	public <T> T autoComplete(Iterable<T> iterable) {
+		
+		ArrayList<T> remaining = new ArrayList<>(); 
+		String input = "";
+		
+		// Moving all iterables to a known type, whitout modifying 
+		// the already existing list
+		for(T element : iterable) {
+			remaining.add(element);
+		}
+		
+		do {
+			// Starts with printing all the possible remaining candidates
+			System.out.println("Possible candidates: ");
+			for(T element : remaining) {
+				System.out.println(element);
+			}
+			
+			// Read the new input, and print the already existing one
+			String newInput = input + nextLine(this.consolePrefix + input);
+			
+			// If no additions has been made, eq the new string is the 
+			// same as the previous one, the top alternative is desired
+			// and thus returned.
+			if(newInput.equals(input)) {
+				return (T) remaining.toArray()[0];
+			}
+			
+			ArrayList<T> remove = new ArrayList<>(); 
+			
+			for(T element : remaining) {
+				
+				String eString = element.toString();
+				if(newInput.length() > eString.length() ||
+					!eString.substring(0, newInput.length()).equalsIgnoreCase(newInput)) {
+					remove.add(element);
+				}
+			}
+			
+			if(remove.isEmpty()) input = newInput;
+			if(remove.size() != remaining.size()) remaining.removeAll(remove);
+			
+		} while (remaining.size() > 1);
+		
+		// Whith only one candidate left, we return it.
+		return (T) remaining.toArray()[0];
 	}
 	
 }
