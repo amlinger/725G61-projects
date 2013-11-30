@@ -22,6 +22,7 @@ public class BankingSystem {
 	private String choice = "";
 	
 	public BankingSystem() {
+		System.out.println(System.getProperty("user.dir"));
 		persons = new ArrayList<Person>();
 		readPersons();
 		readTransactions();
