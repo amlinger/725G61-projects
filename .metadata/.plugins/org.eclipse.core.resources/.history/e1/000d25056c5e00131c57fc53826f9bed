@@ -1,0 +1,171 @@
+package gym.course_725g61.ida.liu;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+/**
+ * Serves as a more useful adapter towards
+ * the more frequently used Scanner class,
+ * for reading personal id:s and other more
+ * specific information then programmatic.
+ * 
+ * Should be seen as a subclass for the 
+ * java.util.Scanner class, but since this 
+ * is declared final an adapter will serve
+ * this purpose.
+ * 
+ * @author Anton Amlinger
+ *
+ */
+public class Reader {
+	
+	private boolean persistant = true;
+	private Scanner scanner;
+	private String consolePrefix = ">> ";
+	
+	public Reader(InputStream is) {
+		this.scanner = new Scanner(is);
+	}
+	
+	/**
+	 * Adapter for java.util.Scanners native next()
+	 * function, and map print a console prefix
+	 * before reading an input if this option is set.
+	 * 
+	 * @return
+	 */
+	public String next(String prefix) {
+		System.out.print(prefix);
+		return this.scanner.next();
+	}
+	
+	public String next() {
+		return next(this.consolePrefix);
+	}
+	
+	
+	/**
+	 * Adapter for java.util.Scanners native nextLine()
+	 * function, and map print a console prefix
+	 * before reading an input if this option is set.
+	 * 
+	 * @return
+	 */
+	public String nextLine(String prefix) {
+		System.out.print(prefix);
+		return this.scanner.nextLine();
+	}
+	
+	public String nextLine() {
+		return nextLine(this.consolePrefix);
+	}
+	
+	
+	/**
+	 * Calls nextPersonalId(String), see specification
+	 * in javadoc.
+	 * 
+	 * @return
+	 */
+	public String nextPersonalId() {
+		return this.nextPersonalId("");
+	}
+	
+	/**
+	 * A specialized personal ID reader, that reads
+	 * an input until the end of a line, and checks if 
+	 * it is a valid swedish personal ID. So far, it
+	 * only provides a somewhat dumb check for this which
+	 * checks the validation numbers as well. 
+	 * 
+	 * An errorMessage may be provided, which is printed
+	 * if unsuccessful.
+	 * 
+	 * If Reader is set to persistant, it will try to read
+	 * a personal number until a correctly formatted number
+	 * is given.
+	 * 
+	 * @param errorMessage
+	 * @return
+	 */
+	public String nextPersonalId(String errorMessage) {
+		String pID 		= "";
+		boolean error	= false;
+		
+		// A non-correct-way of checking a personal id.
+		String regex 	= "(19)[0-9]{2}?((0[1-9])|(1[0-2]))[0-3][0-9]\\-?[0-9]{4}"; 
+		
+		do {
+			pID = nextLine();
+			error = !pID.matches(regex);
+			
+			if(error)
+					System.out.println(errorMessage);
+			
+		} while(persistant && error);
+		
+		return pID;
+	}
+
+	/**
+	 * Given an iterable, it simulates autocompletion by
+	 * iterating over the possible alternatives in the 
+	 * given iterable list, and returning an element 
+	 * when there is only one candidate left.
+	 * 
+	 * If fed an empty string, eg simply pressing enter,
+	 * the top alternative is chosen and returned.
+	 * 
+	 * @param iterable
+	 * @return
+	 */
+	public <T> T autoComplete(Iterable<T> iterable) {
+		
+		ArrayList<T> remaining = new ArrayList<>(); 
+		String input = "";
+		
+		// Moving all iterables to a known type, whitout modifying 
+		// the already existing list
+		for(T element : iterable) {
+			remaining.add(element);
+		}
+		
+		do {
+			// Starts with printing all the possible remaining candidates
+			System.out.println("Possible candidates: ");
+			for(T element : remaining) {
+				System.out.println(element);
+			}
+			
+			// Read the new input, and print the already existing one
+			String newInput = input + nextLine(this.consolePrefix + input);
+			
+			// If no additions has been made, eq the new string is the 
+			// same as the previous one, the top alternative is desired
+			// and thus returned.
+			if(newInput.equals(input)) {
+				return (T) remaining.toArray()[0];
+			}
+			
+			ArrayList<T> remove = new ArrayList<>(); 
+			
+			for(T element : remaining) {
+				
+				String eString = element.toString();
+				if(newInput.length() > eString.length() ||
+					!eString.substring(0, newInput.length()).equalsIgnoreCase(newInput)) {
+					remove.add(element);
+				}
+			}
+			
+			if(remove.isEmpty()) input = newInput;
+			if(remove.size() != remaining.size()) remaining.removeAll(remove);
+			
+		} while (remaining.size() > 1);
+		
+		// Whith only one candidate left, we return it.
+		return (T) remaining.toArray()[0];
+	}
+	
+}

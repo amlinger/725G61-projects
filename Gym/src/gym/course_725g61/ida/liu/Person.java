@@ -28,6 +28,10 @@ public abstract class Person {
 		this(personID, firstName, lastName, "", "");
 	}
 	
+	public String getFullName() {
+		return this.getLastName() + " " + this.getFirstName();
+	}
+	
 	public void addCard(MembershipCard card) {
 		this.cards.add(card);
 	}

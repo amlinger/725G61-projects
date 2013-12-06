@@ -5,5 +5,9 @@ public class Customer extends Person {
 	public Customer(String personID, String firstName, String lastName) {
 		super(personID, firstName, lastName);
 	}
-
+	
+	@Override
+	public String toString() {
+		return this.getPersonID();
+	}
 }

@@ -22,6 +22,7 @@ public class Reader {
 	
 	private boolean persistant = true;
 	private Scanner scanner;
+	private int standardDelay = 10;
 	private String consolePrefix = ">> ";
 	
 	public Reader(InputStream is) {
@@ -107,7 +108,34 @@ public class Reader {
 		
 		return pID;
 	}
-
+	
+	public void printError(String error){
+		sleep(standardDelay);
+		error += '\n';
+		for(int i = 0; i < error.length(); i++){
+			System.err.print(error.charAt(i));
+			sleep(standardDelay);
+		}
+	}
+	
+	public void sleep(int ms) {
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException e) {
+		}
+	}
+	
+	
+	public String nextNonEmpty(String error) {
+		String read = this.nextLine();
+		while(read.isEmpty()) {
+			this.printError(error);
+			read = this.nextLine();
+		}
+		
+		return read;
+	}
+	
 	/**
 	 * Given an iterable, it simulates autocompletion by
 	 * iterating over the possible alternatives in the 
